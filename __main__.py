@@ -12,36 +12,48 @@ message = input()
 # 001011100 => 00 1 0 111 00
 #              00 00 0 0 0 000 00 00
 
+message = "Hi"
 
-def binEncodedRange(message):
+
+def binEncoded(message):
     for charac in message:
         chrToBinStr = bin(ord(charac))[2:]
         yield chrToBinStr
 
 
 # result = [ " ".join(encodeBinSeq()) ]
-for binEnc in binEncodedRange(message):
-    for unaireSeq in unaireSeqRange(binEnc):
+binEncodedMessage = "".join(binEnc for binEnc in binEncoded(message))
+unaireMessage = " ".join(
+    unaireMessage for unaireMessage in splitUnaireSeq(binEncodedMessage))
+
+for binEnc in binEncoded(message):
+    for unaireSeq in splitUnaireSeq(binEnc):
         unaireEncode(unaireSeq)
 
 
-
-@unaireSeqValidation
-def unaireSeqRange(binEncodedChar):
-    pass
-
-
 def unaireSeqValidation(f):
+    def hasOnlyBinaries(seq):
+        binCount = seq.count('0') + seq.count('1')
+        return len(seq) == binCount
+
     def wrapped(seq):
+        if not hasOnlyBinaries(seq):
+            raise ValueError('seq does not contain only binaries')
         r = f(seq)
+        return r
     return wrapped
 
 
-@seqValidation
-def unaireEncode(unaireSeq):
-    result = '0 ' if unaireSeq[0] == '1' else '00 '
-    result += '0' * len(unaireSeq)
-    return result
+@unaireSeqValidation
+def splitUnaireSeq(message):
+    unaireSeq = message[0]
+    for i in message[1:]:
+        if i == unaireSeq[0]:
+            unaireSeq += i
+        else:
+            yield unaireSeq
+            unaireSeq = i
+    yield unaireSeq
 
 
 def seqValidation(f):
@@ -60,6 +72,13 @@ def seqValidation(f):
         r = f(seq)
         return r
     return wrapped
+
+
+@seqValidation
+def unaireEncode(unaireSeq):
+    result = '0 ' if unaireSeq[0] == '1' else '00 '
+    result += '0' * len(unaireSeq)
+    return result
 
 
 # Write an action using print
