@@ -1,34 +1,13 @@
 import sys
 import math
 
-# Auto-generated code below aims at helping you parse
-# the standard input according to the problem statement.
-
-message = input()
-
-# get the bin code of the ASCII code of each letter in message
-# 'h' = '11010000'
-# for each uniq seq in binEncoded(Char), chuckEncode(Seq)
-# 001011100 => 00 1 0 111 00
-#              00 00 0 0 0 000 00 00
-
-message = "Hi"
+# ================== FUNCTIONS
 
 
-def binEncoded(message):
+def binEncode(message):
     for charac in message:
         chrToBinStr = bin(ord(charac))[2:]
         yield chrToBinStr
-
-
-# result = [ " ".join(encodeBinSeq()) ]
-binEncodedMessage = "".join(binEnc for binEnc in binEncoded(message))
-unaireMessage = " ".join(
-    unaireMessage for unaireMessage in splitUnaireSeq(binEncodedMessage))
-
-for binEnc in binEncoded(message):
-    for unaireSeq in splitUnaireSeq(binEnc):
-        unaireEncode(unaireSeq)
 
 
 def unaireSeqValidation(f):
@@ -81,7 +60,14 @@ def unaireEncode(unaireSeq):
     return result
 
 
-# Write an action using print
-# To debug: print("Debug messages...", file=sys.stderr)
+# ================== MAIN
 
-print("answer")
+message = input()
+
+binMessage = "".join(eachBinEncodedChar for eachBinEncodedChar in binEncode(message))
+
+unaireMessage = " ".join(
+    unaireEncode(eachUnaireSeq) for eachUnaireSeq in splitUnaireSeq(binMessage)
+)
+
+print(unaireMessage)
